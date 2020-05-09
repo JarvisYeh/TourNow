@@ -1,0 +1,160 @@
+@(ip: String, newId: Integer)
+
+@layout("Search"){
+		
+		<script>
+			//Function for get all the cars available in City that the uers input
+			function getByCity(rurl, newId)
+			{
+				var city = myform.city.value;
+				if (city!="Galway" && city!="Dublin" && city!="Cork")
+				{
+					alert("Error: Please Enter the Correct City Name");
+				}
+				$.ajax({
+					url : "http://localhost:8070/getCarsByCity?city="+city,
+					type : "GET",
+					dataType : "json", 
+					success : function(cars) {
+						showCars(cars, rurl, newId);
+						console.log("success! result: "+JSON.stringify(cars));
+					},
+					error : function(exception){
+						console.log("error geting access to the broker server for getting cars!");
+					}
+				});				
+			}
+
+			//Function for get all the cars available in City where is obtained accroding to the user's ip
+			function getByIP(ip, rurl, newId)
+			{
+				$.ajax({
+					//since that the request is from localhsot, the ip is 127.0.0.0
+					//for test use, we hard code the request ip
+					url : "http://localhost:8070/getCarsByIP?ip="+"193.1.167.16",
+
+					//In practical, the following line should be un-comment
+					//url : "http://localhost:8070/getCarsByIP?ip="+ip,					
+					type : "GET",
+					dataType : "json",
+					success : function(cars) {
+						showCars(cars, rurl, newId);
+						console.log("success! result: "+JSON.stringify(cars));
+					},
+					error : function(exception){
+						console.log("error geting access to the broker server for getting cars!");
+					}
+				});
+			}
+
+			function showCars(cars, rurl, newId)
+			{
+				if ( $.fn.dataTable.isDataTable( '#cars_table' ) ) {
+					table
+					.clear();
+					table.rows.add(cars).draw();
+				}
+				else {
+				    table = $('#cars_table').DataTable( {
+						data : cars,
+						columns: [
+							{data: "registration_number"},
+							{data: "model"},
+							{data: "manufacturer"},
+							{data: "price"},
+							{data: "city"},
+							{data: null}],
+				    	columnDefs : [
+	                    	{targets : -1,//last column
+	                      	render : function ( data, type, full, meta )
+		                        {
+	                            	return "<input type = 'button' id = 'RentButton' value = 'Rent this Car'>"
+	                        	}
+                        	}]
+					});
+				    $("#cars_table tbody")
+				    .on("click", "#RentButton", function () {
+		                //get the rows
+		                var row = $("table#cars_table tr").index($(this).closest("tr"));
+		                //Get the series from row 0
+		                var registration_number = $("table#cars_table").find("tr").eq(row).find("td").eq(0).text();
+		                var model = $("table#cars_table").find("tr").eq(row).find("td").eq(1).text();
+		                var manufacturer = $("table#cars_table").find("tr").eq(row).find("td").eq(2).text();
+		                var price = $("table#cars_table").find("tr").eq(row).find("td").eq(3).text();
+		                var city = $("table#cars_table").find("tr").eq(row).find("td").eq(4).text();
+		                //function to send back the car that is tobe rented
+			             var car = "{"+
+			                '"id":'+newId+","+
+	                		'"registration_number":'+registration_number+","+
+	        				'"model":'+'"'+model+'"'+","+
+	        				'"manufacturer":'+'"'+manufacturer+'"'+","+
+	        				'"price":'+price+","+  				
+	        				'"city":'+'"'+city+'"'+            		
+	                		"}";     
+                		var json = JSON.parse(car);
+                		sendToServer(json, rurl);
+	            	});
+				}
+			}
+
+			function sendToServer(json, rurl)
+			{					
+				$.ajax({
+					url : "http://localhost:8070/rent?city="+json.city+"&id="+json.registration_number,
+					type : "GET",
+					success : function() {
+						$.ajax({
+							url : rurl+"/rent/"+json.id+"/"+json.registration_number+"/"+json.model+"/"+json.manufacturer+"/"+json.price+"/"+json.city,
+							type : "POST",
+							success : function()
+							{
+								alert("Car rented successfully!");
+								console.log("rent successfully");
+								window.location="/rentedCars";
+							},
+							error : function(Exception)
+							{
+								console.log("error when trying to record the to be rented car!");
+								window.location.reload();
+							}
+						})},
+					error : function(){
+						console.log("error when trying to send car message to the broker server!");
+						window.location.reload();
+						}
+				});
+			}
+			
+
+		</script>		
+		<!-- Change the hint info. here -->
+		<form name="myform">  
+			<h1>Your City (Now Available in Dublin, Cork and Galway)</h1>
+			<input type="text" name="city" class="form-control"/>
+			<br />
+			<button type="button" class="btn btn-default btn-lg" onclick="getByCity('@routes.CarController.searchPage()', @newId)">
+				Search
+			</button>
+			
+			<button type="button" class="btn btn-primary btn-lg" onclick="getByIP('@ip',
+				'@routes.CarController.searchPage()', @newId)">
+				Auto-located Search
+			</button>
+		</form>
+		
+		<!-- Table info. -->
+		<table id="cars_table" class="table table-bordered">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>model</th>
+					<th>manufacturer</th>
+					<th>price</th>>									
+					<th>region</th>		
+					<th>Rent</th>							
+				</tr>
+			</thead>
+		</table>
+
+		
+	}

@@ -1,0 +1,22 @@
+@(carForm: Form[Car])
+@import views.html.helper
+
+<!--Using Layout-->
+@layout("Create Car"){
+		<h1>Create Book</h1>
+		<hr />
+		@helper.form(action=routes.CarController.save()){
+			@helper.inputText(carForm("id"),'class->"form-control")
+			@helper.inputText(carForm("registration_number"),'class->"form-control")
+			@helper.inputText(carForm("model"),'class->"form-control")
+			@helper.inputText(carForm("manufacturer"),'class->"form-control")
+			@helper.inputText(carForm("price"),'class->"form-control")
+			@helper.inputText(carForm("city"),'class->"form-control")
+			alter()
+			<button type="submit" class="btn btn-default">
+				<i class="glyphicon glyphicon-plus"></i>
+				Create Car
+			</button>
+			}
+			
+	}

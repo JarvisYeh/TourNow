@@ -1,0 +1,61 @@
+@(cars : List[Car])
+
+<!--Using Layout-->
+@layout("Rented Cars"){
+	
+		<script>		
+			function returnCar(url, rUrl, city, reg)
+			{
+				$.ajax({
+					url: url,
+					method: "DELETE",
+					success: function(){
+						sendToServer(city, reg);
+						console.log("successfully delete in DB")		
+					},
+					error: function(){
+						console.log("error while trying to delte in DB")
+						window.location.reload();
+					}
+				});
+			}
+			
+			function sendToServer(city, reg)
+			{
+				$.ajax({
+					url: "http://localhost:8091/return?city="+city+"&id="+reg,
+					method: "GET",
+					success: function(){
+						window.location = rUrl;
+					},
+					error: function(){
+						console.log("error when sending return message to broker server!")
+						window.location.reload();
+					}
+				});
+				
+			}
+		</script>
+		
+		<h1>Show Rented Cars</h1>
+		<hr />
+		<hr />
+		
+		@for(car <- cars){
+			<p>ID : @car.id</p>			
+			<p>Model : @car.model</p>
+			<p>Price : @car.price</p>
+			<p>Manufacturer : @car.manufacturer</p>
+			<p>City : @car.city</p>
+			
+			<button class="btn btn-danger btn-lg" onclick="returnCar(
+				'@routes.CarController.returnCar(car.id)', 
+					'@routes.HomeController.index()',
+						'@car.city', @car.registration_number)">
+			Return the Car
+			</button>
+			<hr />
+		}
+		
+		
+	}
