@@ -42,10 +42,12 @@ car.sql creates a tournow database with a table named cars, which stores the car
 Port Assignment/UserName/PassWord:<br/>
 **For /DublinServer, /CorkServer, /GalwayServer**, modify the file xxServer/src/main/java/com/tournow/controllers/ConnectMySQL.java
 ```java
+// modify username and password
 private static String user = "username_of_your_db";
 private static String password = "password_of_your_db";
 ```
 ```java
+// modify port
 String url = "jdbc:mysql://localhost:#desire_port#/dublin";
 ```
 **For /TourNowApp**, modify the file /TourNowApp/conf/application.conf at line 369-371:
@@ -58,7 +60,31 @@ The default port for all 4 databases above is 3306 and the default username is "
 
 
 ### **4. IPStack:**<br/>
+The broker server will ask for the desire location for car renting, that could be 2 potions.<br/>
+provided by 
+```scala
+			//Function for get all the cars available in City where is obtained accroding to the user's ip
+			function getByIP(ip, rurl, newId)
+			{
+				$.ajax({
+					//since that the request is from localhsot, the ip is 127.0.0.0
+					//for test use, we hard code the request ip
+					url : "http://localhost:8070/getCarsByIP?ip="+"193.1.167.16",
 
+					//In practical, the following line should be un-comment
+					//url : "http://localhost:8070/getCarsByIP?ip="+ip,					
+					type : "GET",
+					dataType : "json",
+					success : function(cars) {
+						showCars(cars, rurl, newId);
+						console.log("success! result: "+JSON.stringify(cars));
+					},
+					error : function(exception){
+						console.log("error geting access to the broker server for getting cars!");
+					}
+				});
+			}
+```
 
 ## Pre-Installation requirement
 sbt, Maven, MySQL, jdbc
