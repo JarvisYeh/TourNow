@@ -16,7 +16,7 @@ public class ConnectMySQL {
 	
 	
 	private static String user = "root";
-	private static String password = "1023";
+	private static String password = "";
 	
 	static Gson gson = new Gson();
 	
