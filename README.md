@@ -98,9 +98,9 @@ sbt, Maven, MySQL, jdbc
 
 
 ## Compile Process
-### Database
+### 1. Database
 1. run sql files in DatabasesSetUp folder.
-### Maven Project
+### 2. Maven Project
 1. In each directory /EurekaServer, /BrokerServer, /DublinServer, /CorkServer, /GalwayServer. Use shell to run:
    ```
    mvn compile
@@ -110,7 +110,7 @@ sbt, Maven, MySQL, jdbc
 4. run DublinServer.java in /DublinServer/src/main/java/com/tournow.
 5. run CorkServer.java in /CorkServer/src/main/java/com/tournow
 6. run GalwayServer.java in /GalwayServer/src/main/java/com/tournow
-### Sbt Project
+### 3. Sbt Project
 1. In /TourNowApp directory. Use shell to run:
     ```
     sbt update
