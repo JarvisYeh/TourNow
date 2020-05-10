@@ -20,10 +20,13 @@ EurekaServer is the center of the distributed system, BrokerServer, DublinServer
 Port Assignment:<br/>
 Default: EurekaServer: 8080, BrokerServer: 8070, DublinServer: 8091, CorkServer: 8092, Galway: 8093<br/>
 Port assignment could be modified in xxServer/src/main/resources/application.properties for separate server itself.<br/>
-Modify to "server.port = #desire_port"<br/>
-Note that if the port of eureka server is changed, all application.property of client server has to be modified: "eureka.client.serviceUrl.defaultZone=http://localhost:#eureka_server_port_Num#/eureka"<br/>
-The servers registration 
-
+```
+server.port = #desire_port
+```
+Note that if the port of eureka server is changed, all application.property files of client servers need to be modified.
+```
+eureka.client.serviceUrl.defaultZone = http://localhost:#eureka_server_port_Num#/eureka"
+```
 
 ### **Sbt Project:**<br/>
 **/TourNowApp**<br/>
@@ -38,6 +41,11 @@ car.sql creates a tournow database with a table named cars, which stores the car
 
 Port Assignment/UserName/PassWord:<br/>
 For /DublinServer, /CorkServer, /GalwayServer, modify the file xxServer/src/main/java/com/tournow/controllers/ConnectMySQL.java
+```java
+private static String user = "username_of_db";
+private static String password = "password_of_db";
+```
+
 
 
 ### **IPStack**<br/>
