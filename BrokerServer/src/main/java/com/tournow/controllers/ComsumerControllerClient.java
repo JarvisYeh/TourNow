@@ -35,7 +35,7 @@ public class ComsumerControllerClient {
 	}
 	
 	public  String searchCity(String ip) { 
-		String access_key = "2dc9de58a43d84d05c924e0c8ab335d3";
+		String access_key = "#input_your_access_key_here#";
 		String requestUrl = "http://api.ipstack.com/"+ ip + "?access_key=" + access_key + "&fields=city";
 		
 		RestTemplate restTemplate = new RestTemplate();
